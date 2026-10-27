@@ -17,12 +17,18 @@ Install this on `PATH` (declared in `plugin.toml` `dependencies`):
 
 - `herdr` — session discovery, snapshots, agent focus, and session lifecycle actions.
 
-Optional, used only when both are present:
+Optional, for focusing existing terminal windows:
 
 - `hyprctl` — focuses an already-open Herdr terminal window on Hyprland.
-- `ps` — maps a Herdr client process to its Hyprland window.
+- `niri` — lists and focuses windows on Niri, and provides the window picker when needed.
+- `ps` — maps attached Herdr client processes to terminal windows through `/proc/PID/stat`.
 
-Without the optional tools, the plugin still works on generic Linux and opens or attaches to a session through Noctalia's configured terminal.
+Hyprland integration uses `hyprctl` and `ps`. Niri integration uses `niri` and `ps`,
+and requires Noctalia to inherit `NIRI_SOCKET` from the compositor session. These
+compositor-specific tools are optional rather than mandatory manifest dependencies.
+On other desktops the plugin opens or attaches to a session through Noctalia's
+configured terminal. On Niri, discovery or focus errors are reported without opening
+a duplicate terminal.
 
 ## Usage
 
@@ -37,6 +43,8 @@ Click the widget to open the `panel` anchored next to the bar. A running session
 - refresh immediately.
 
 The default session can be stopped and started, but cannot be deleted.
+
+Opening a session or focusing an agent closes the popup before switching windows.
 
 ```sh
 noctalia msg panel-toggle hy4ri/herdr:panel
@@ -117,6 +125,41 @@ A refresh is `herdr session list --json` plus one `herdr api snapshot` per runni
 When `hyprctl` and `ps` are available, the service maps Herdr client processes to `hyprctl clients -j` results. Opening a mapped session focuses its existing window. Focusing an agent first runs Herdr's `agent focus` command, then brings that session window forward.
 
 If the session has no mapped window, or compositor focusing is unavailable, the service uses `noctalia.runInTerminal` with `herdr` for the default session or `herdr --session NAME` for a named session.
+
+## Niri integration
+
+When Noctalia runs inside Niri, the service matches `niri msg --json windows`
+results to attached Herdr clients by their parent processes. Clicking an agent
+first focuses its Herdr pane, then brings the existing terminal forward with
+`niri msg action focus-window --id ID`. The window list is checked again on every
+click. A terminal is opened only when no window is mapped to that session.
+
+Some terminals, including Ghostty, can have several windows sharing one process.
+If the session has multiple candidate windows, Niri's window picker opens: click
+the existing Herdr terminal once, or press Escape to cancel. The choice is kept
+in memory for that session, checked against all attached clients on subsequent
+clicks, and discarded when it no longer matches. Restarting or disabling the plugin
+clears the choice. Window IDs and selections are not written to disk.
+
+The popup closes before selection so it does not cover the target window. Cancelling
+the picker is silent, and repeated clicks do not start competing pickers. Selecting
+an unrelated window shows a hint; command failures are reported and logged with the
+`HerdR Niri picker:` prefix. Neither case creates an extra terminal.
+
+## Development tests
+
+Run from the repository root with Lua 5.4 or newer:
+
+```sh
+lua herdr/tests/test_focus.lua
+noctalia plugins lint herdr
+```
+
+The tests load the real service and panel scripts against mocked process and
+compositor APIs. They cover default and named sessions, shared terminal processes,
+multiple clients, selection cancellation/revalidation, overlapping requests,
+command failures, and the existing Hyprland focus path. They do not replace a live
+desktop test.
 
 ## Notes
 
