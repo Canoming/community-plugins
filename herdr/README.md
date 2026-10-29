@@ -44,7 +44,8 @@ Click the widget to open the `panel` anchored next to the bar. A running session
 
 The default session can be stopped and started, but cannot be deleted.
 
-Opening a session or focusing an agent closes the popup before switching windows.
+Opening a session or focusing an agent closes the popup before switching windows
+on both Niri and Hyprland.
 
 ```sh
 noctalia msg panel-toggle hy4ri/herdr:panel
@@ -126,6 +127,13 @@ When `hyprctl` and `ps` are available, the service maps Herdr client processes t
 
 If the session has no mapped window, or compositor focusing is unavailable, the service uses `noctalia.runInTerminal` with `herdr` for the default session or `herdr --session NAME` for a named session.
 
+Client-process discovery on both Hyprland and Niri accepts bare `herdr` and
+`herdr attach`, including `--session NAME`, `--session=NAME`, and `--handoff`,
+plus `herdr session attach NAME`. Short-lived commands such as `herdr api`,
+`herdr agent focus`, `herdr status` and `herdr server` do not count as attached
+clients; neither do `--remote` clients. This also narrows the Hyprland process
+matching compared with earlier plugin versions.
+
 ## Niri integration
 
 When Noctalia runs inside Niri, the service matches `niri msg --json windows`
@@ -134,21 +142,50 @@ first focuses its Herdr pane, then brings the existing terminal forward with
 `niri msg action focus-window --id ID`. The window list is checked again on every
 click. A terminal is opened only when no window is mapped to that session.
 
+Within those process-matched candidates, a unique title match skips the picker.
+The service recognizes Herdr 0.9.5's default `{hostname}: {workspace}` title using
+the local hostname (`/proc/sys/kernel/hostname`) and workspace labels it already
+polls. It also recognizes titles beginning with `herdr` (case-insensitive), such
+as `Herdr: project`. If several sessions share a terminal process, a title must
+distinguish the requested session by its workspace or an explicit session name;
+session names use exact case and whole-name boundaries. A generic `herdr` title
+alone cannot distinguish those sessions. Editor titles and unrelated process
+windows are not treated as matches.
+
+Title matching does not change Herdr's configuration or terminal titles and makes
+no extra Herdr calls. The default title needs no configuration change. A custom
+title can retain a recognizable prefix, for example
+`window_title = "herdr: {hostname}: {workspace}"` under `[ui]` in Herdr's config.
+See [Herdr's title configuration](https://herdr.dev/docs/configuration/#outer-terminal-window-title)
+for supported tokens; Herdr 0.9.5 has no `{session}` token.
+
 Some terminals, including Ghostty, can have several windows sharing one process.
-If the session has multiple candidate windows, Niri's window picker opens: click
-the existing Herdr terminal once, or press Escape to cancel. The choice is kept
-in memory for that session, checked against all attached clients on subsequent
-clicks, and discarded when it no longer matches. Restarting or disabling the plugin
-clears the choice. Window IDs and selections are not written to disk.
+If multiple candidates remain and no title uniquely identifies the window, Niri's
+window picker opens: click the existing Herdr terminal once, or press Escape to
+cancel. A Noctalia notification names the session and asks you to select its
+existing terminal window, with an Esc cancellation hint. An existing remembered
+choice takes precedence over title matching while
+it remains valid. Automatic title matches are checked afresh on every click.
+The manual choice is kept
+in memory for that session and checked against all attached clients on subsequent
+clicks. Background polls never clear it; a successful click-time discovery discards
+it when it no longer matches. Restarting Noctalia or disabling the plugin clears
+the choice, so an ambiguous session needs the picker again afterward. Window IDs
+and selections are not written to disk.
 
 The popup closes before selection so it does not cover the target window. Cancelling
 the picker is silent, and repeated clicks do not start competing pickers. Selecting
 an unrelated window shows a hint; command failures are reported and logged with the
 `HerdR Niri picker:` prefix. Neither case creates an extra terminal.
 
+While a focus or picker request is pending, only further open/focus requests are
+blocked. Refresh, stop and delete requests remain available, and their completion
+does not release the pending focus request's lock. A cancelled picker leaves no
+error banner in the panel.
+
 ## Development tests
 
-Run from the repository root with Lua 5.4 or newer:
+Run from the repository root with Lua 5.4 or newer and Python 3:
 
 ```sh
 lua herdr/tests/test_focus.lua
@@ -158,8 +195,22 @@ noctalia plugins lint herdr
 The tests load the real service and panel scripts against mocked process and
 compositor APIs. They cover default and named sessions, shared terminal processes,
 multiple clients, selection cancellation/revalidation, overlapping requests,
-command failures, and the existing Hyprland focus path. They do not replace a live
-desktop test.
+command failures, and the existing Hyprland focus path. Regression cases exercise
+the actual command watcher during a pending picker, stop/delete completion and
+failure, incomplete background polls, click-time invalidation, and cancelled
+status rendering. Title cases cover default and prefixed titles, named sessions
+sharing a process, duplicate workspace labels, exact session-name boundaries,
+unrelated titles/windows, remembered choices and title changes between clicks.
+Notification cases check the session name, cancellation hint, prompt-before-picker
+ordering, and that direct focus, remembered choices and rapid clicks do not emit
+unnecessary or duplicate prompts.
+
+Representative Niri JSON fixtures also pass through Python's standard JSON parser
+at the mocked `noctalia.json.decode` boundary, covering window arrays, picked-window
+objects, nullable fields, malformed JSON and cancellation. Python is only a test
+dependency; the plugin continues to use Noctalia's built-in JSON decoder, which
+this offline harness does not execute. These tests do not replace a live desktop
+test.
 
 ## Notes
 
