@@ -4393,8 +4393,8 @@ tags = ["bar", "launcher", "panel", "utility"]
 [[plugin]]
 id = "miguelfm/ai-triage"
 name = "AI Triage"
-version = "1.8.0"
-updated_at = 1793110625
+version = "1.8.2"
+updated_at = 1793396809
 added_at = 1791591274
 author = "miguelfm"
 license = "MIT"
