@@ -5218,8 +5218,8 @@ tags = ["bar", "panel", "service", "network", "indicator"]
 [[plugin]]
 id = "nezerkill/honor-earbuds"
 name = "Honor Earbuds"
-version = "1.0.1"
-updated_at = 1793189290
+version = "1.1.0"
+updated_at = 1793319576
 added_at = 1793133516
 author = "nezerkill"
 license = "MIT"
