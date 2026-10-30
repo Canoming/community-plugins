@@ -486,15 +486,21 @@ tags = ["clock"]
 [[plugin]]
 id = "lowcache/claude-companion"
 name = "Claude Companion"
-version = "1.6.0"
-updated_at = 1789917382
+version = "1.6.1"
+updated_at = 1793318963
 added_at = 1784465190
 author = "lowcache"
 license = "MIT"
 icon = "robot"
 description = "Claude Code companion: /claude launch + a telemetry-driven attention pulse."
-plugin_api = 3
+plugin_api = 31
 tags = ["ai", "productivity", "bar", "desktop", "panel", "launcher"]
+
+[[plugin.release]]
+plugin_api = 3
+version = "1.6.0"
+updated_at = 1789917382
+rev = "378127963fc2febcaaa1f99b6e3672f10bc0e769"
 
 [[plugin]]
 id = "ycf/mawaqit"
@@ -1717,15 +1723,21 @@ tags = ["launcher", "system", "utility"]
 [[plugin]]
 id = "decksters-lab/palette-creator"
 name = "Palette Creator"
-version = "1.0.2"
-updated_at = 1793110598
+version = "1.1.0"
+updated_at = 1793318695
 added_at = 1786747169
 author = "decksters-lab"
 license = "MIT"
 icon = "palette"
 description = "Build a theme by picking each color yourself, even straight off your screen."
-plugin_api = 43
+plugin_api = 44
 tags = ["theming", "utility"]
+
+[[plugin.release]]
+plugin_api = 43
+version = "1.0.2"
+updated_at = 1793110598
+rev = "3577c3efedfd60c9bfd758e2765fde8fa43952c7"
 
 [[plugin.release]]
 plugin_api = 9
@@ -2814,8 +2826,8 @@ rev = "9c01bfa388e0e0ff6506df87f5b5b117ca4b0852"
 [[plugin]]
 id = "jrohland/claudecode"
 name = "Claude Code Usage"
-version = "1.1.1"
-updated_at = 1792983494
+version = "1.1.2"
+updated_at = 1793318935
 added_at = 1788734110
 author = "Nicolas Bellamy (Noctalia port by jrohland)"
 license = "MIT"
@@ -3880,8 +3892,8 @@ rev = "5e4f59599e91e1651c795b9efbc83c0dacc84405"
 [[plugin]]
 id = "teagar/niri-workspace-preview"
 name = "Niri Workspace Preview"
-version = "1.1.1"
-updated_at = 1792983494
+version = "1.1.2"
+updated_at = 1793318935
 added_at = 1790342081
 author = "Teagar"
 license = "MIT"
