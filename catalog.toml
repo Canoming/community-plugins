@@ -3671,8 +3671,8 @@ rev = "3c9bc784022a498804ec6e1371cd2caa06b8d846"
 [[plugin]]
 id = "hy4ri/herdr"
 name = "Herdr"
-version = "1.1.1"
-updated_at = 1792983494
+version = "1.2.0"
+updated_at = 1793375867
 added_at = 1790164461
 author = "Hy4ri"
 license = "MIT"
