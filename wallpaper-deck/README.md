@@ -2,8 +2,6 @@
 
 A native Noctalia wallpaper picker inspired by Magic: The Gathering cards, featuring Material 3 dynamic color extraction, tiered coverflow navigation, multi-monitor targeting, and Wallhaven search integration.
 
-![Wallpaper Deck Preview](./thumbnail.webp)
-
 ## Plugin
 
 | Field | Value |
@@ -13,13 +11,8 @@ A native Noctalia wallpaper picker inspired by Magic: The Gathering cards, featu
 
 ## Requirements
 
-The plugin works out of the box with native Luau scanning. For enhanced features, the following optional tools are supported:
-
-### Optional Tools
-
-- `matugen` - Generates Material 3 color palettes and dynamic contrast tokens from wallpapers.
-- `ffmpeg` or `imagemagick` - Generates cached thumbnails for faster rendering.
-- `swww` or `awww` - Alternative wallpaper daemons supported via the custom command setting.
+Install `ffmpeg` and `matugen` on `PATH` for thumbnail generation and dynamic Material 3 color extraction. Optional wallpaper tools:
+- `swww` or `awww` - Alternative wallpaper daemons if `backend_mode` is set to `custom`.
 
 ## Usage
 
@@ -53,7 +46,7 @@ Enable the `toggle` shortcut in Noctalia Settings or bind `noctalia msg panel-to
 | `Enter` / `Return` | Apply selected wallpaper to active target monitor |
 | `Space` | Toggle Peek mode (temporarily hides deck to inspect full wallpaper) |
 | `F` | Toggle favourite status on current wallpaper |
-| `S` | Cycle sort mode (`Name` -> `Colour` -> `Newest`) |
+| `S` | Cycle sort mode (`Name A-Z` -> `Name Z-A` -> `Colour` -> `Newest` -> `Oldest`) |
 | `R` | Jump to a random wallpaper |
 | `P` | Toggle hi-res preview in Wallhaven mode |
 | `Tab` | Switch source tab (`Local` -> `Favourites` -> `Wallhaven`) |
@@ -69,7 +62,7 @@ Configurable inside Noctalia Settings (**Settings** -> **Plugins** -> **Wallpape
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `wallpaper_dir` | `folder` | `~/Pictures/wallpapers` | Primary directory scanned for wallpapers. |
+| `wallpaper_dir` | `folder` | `~/Pictures/Wallpapers` | Primary directory scanned for wallpapers. |
 | `extra_wallpaper_dir` | `folder` | `~/Pictures/WallHaven` | Additional secondary directory scanned for wallpapers. |
 | `include_wallhaven_downloads` | `bool` | `true` | Automatically includes the Wallhaven download directory in the local deck. |
 | `additional_wallpaper_dirs` | `string_list` | `[]` | List of extra directories to scan (add more using the '+' button in Settings). |
@@ -78,7 +71,6 @@ Configurable inside Noctalia Settings (**Settings** -> **Plugins** -> **Wallpape
 | `custom_command` | `string` | `swww img "{path}" --transition-type grow --transition-fps 60` | Shell command executed when `backend_mode` is set to `custom`. Supports `{path}` and `{output}`. |
 | `post_hook_command` | `string` | `""` | Optional shell hook executed after applying a wallpaper (e.g. `matugen image "{path}"`). |
 | `animate_selected_card` | `bool` | `true` | Enables subtle floating bobbing animation on the active center card. |
-| `visible_deck_cards` | `int` | `7` | Number of cards rendered simultaneously in the deck (3 to 11). |
 | `wallhaven_api_key` | `string` | `""` | Optional API key for Wallhaven (unlocks user collections and NSFW filters). |
 | `wallhaven_categories` | `string` | `"111"` | Wallhaven categories bitflag (General/Anime/People, e.g. 111). |
 | `wallhaven_purity` | `string` | `"100"` | Wallhaven purity bitflag (SFW/Sketchy/NSFW, e.g. 100 for SFW). |
@@ -90,7 +82,7 @@ Configurable inside Noctalia Settings (**Settings** -> **Plugins** -> **Wallpape
 
 ## IPC
 
-The picker panel can be opened, closed, or toggled via Noctalia's IPC interface:
+The picker panel and service can be triggered via Noctalia's IPC interface:
 
 ```sh
 # Toggle picker panel
@@ -101,6 +93,9 @@ noctalia msg panel-open ishan0121/wallpaper-deck:picker
 
 # Close picker panel
 noctalia msg panel-close ishan0121/wallpaper-deck:picker
+
+# Rescan wallpaper directories
+noctalia msg plugin ishan0121/wallpaper-deck:service all rescan
 ```
 
 ## Notes

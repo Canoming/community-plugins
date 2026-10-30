@@ -42,14 +42,6 @@
       "label": "Animate Selected Card",
       "description": "Enable subtle floating and transition animation on the active center card."
     },
-    "visible_deck_cards": {
-      "label": "Visible Deck Cards",
-      "description": "Number of cards rendered simultaneously in the deck window (3 to 11)."
-    },
-    "max_deck_wallpapers": {
-      "label": "Maximum Wallpapers in Deck",
-      "description": "Maximum number of wallpapers loaded into the deck UI (favorites are always included)."
-    },
     "wallhaven_api_key": {
       "label": "Wallhaven API Key",
       "description": "Optional API key for Wallhaven (unlocks NSFW and personal collections)."

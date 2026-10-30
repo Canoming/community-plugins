@@ -1,6 +1,6 @@
 id = "ishan0121/wallpaper-deck"
 name = "Wallpaper Deck"
-version = "1.1.0"
+version = "1.2.1"
 plugin_api = 43
 author = "Ishan0121"
 license = "GPL-3.0"
@@ -77,25 +77,6 @@ type = "bool"
 label_key = "settings.animate_selected_card.label"
 description_key = "settings.animate_selected_card.description"
 default = true
-
-
-[[setting]]
-key = "visible_deck_cards"
-type = "int"
-label_key = "settings.visible_deck_cards.label"
-description_key = "settings.visible_deck_cards.description"
-default = 7
-min = 3
-max = 11
-
-[[setting]]
-key = "max_deck_wallpapers"
-type = "int"
-label_key = "settings.max_deck_wallpapers.label"
-description_key = "settings.max_deck_wallpapers.description"
-default = 600
-min = 50
-max = 1500
 
 [[setting]]
 key = "wallhaven_api_key"
