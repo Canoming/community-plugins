@@ -186,6 +186,7 @@ body:
         - nix-monitor
         - nix-search
         - nix-status
+        - nixos-updates
         - noctaproton-vpn
         - noctes
         - noctwhspr
