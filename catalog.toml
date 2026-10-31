@@ -5272,3 +5272,16 @@ icon = "battery-charging"
 description = "Cycles the battery charge type: conservation, normal or fast charge."
 plugin_api = 43
 tags = ["hardware", "shortcut", "system", "nixos"]
+
+[[plugin]]
+id = "dmopp/nixos-updates"
+name = "NixOS Updates"
+version = "1.0.0"
+updated_at = 1793405161
+added_at = 1793405161
+author = "dMopp"
+license = "MIT"
+icon = "snowflake"
+description = "Pending flake input, package and Flatpak updates on NixOS, like apt list --upgradable."
+plugin_api = 43
+tags = ["bar", "panel", "service", "system", "nixos", "indicator"]
